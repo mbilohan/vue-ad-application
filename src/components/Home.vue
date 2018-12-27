@@ -4,7 +4,7 @@
             <v-layout row>
                 <v-flex xs12>
                     <v-carousel>
-                        <v-carousel-item v-for="ad of ads" :key="ad.id" :src="ad.imgSrc">
+                        <v-carousel-item v-for="ad of promoAds" :key="ad.id" :src="ad.imgSrc">
                             <div class="carousel-link">
                                 <v-btn class="error" :to="'/ad/' + ad.id">{{ ad.title }}</v-btn>
                             </div>
@@ -23,7 +23,7 @@
                         <v-card-title primary-title>
                             <div>
                                 <h3 class="headline mb-0">{{ ad.title }}</h3>
-                                <div>{{ ad.desctiption }}</div>
+                                <div>{{ ad.description }}</div>
                             </div>
                         </v-card-title>
 
@@ -41,38 +41,12 @@
 
 <script>
 export default {
-  data () {
-    return {
-      ads: [
-        {
-          title: 'First ad',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore, voluptate.',
-          promo: false,
-          imgSrc: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
-          id: '101'
-        },
-        {
-          title: 'Second ad',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore, voluptate.',
-          promo: false,
-          imgSrc: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
-          id: '102'
-        },
-        {
-          title: 'Third ad',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore, voluptate.',
-          promo: false,
-          imgSrc: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
-          id: '103'
-        },
-        {
-          title: 'Fourth ad',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore, voluptate.',
-          promo: false,
-          imgSrc: 'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
-          id: '104'
-        }
-      ]
+  computed: {
+    promoAds () {
+      return this.$store.getters.promoAds
+    },
+    ads () {
+      return this.$store.getters.ads
     }
   }
 }
