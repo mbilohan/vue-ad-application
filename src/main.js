@@ -3,11 +3,12 @@ import App from './App'
 import router from './router'
 import store from './store'
 import Vuetify from 'vuetify'
+import BuyAdModalComponent from '@/components/Ads/BuyAdModal'
 import * as firebase from 'firebase'
 import 'vuetify/dist/vuetify.min.css'
 
 Vue.use(Vuetify)
-
+Vue.component('app-buy-ad-modal', BuyAdModalComponent)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
@@ -17,7 +18,7 @@ new Vue({
   store,
   components: { App },
   template: '<App/>',
-  create () {
+  created () {
     // Initialize Firebase
     firebase.initializeApp({
       apiKey: 'AIzaSyBDP36fpgPiWdwVSXO8IqsN0KfEsm2pgf8',
@@ -27,5 +28,13 @@ new Vue({
       storageBucket: 'vue-ad-project-6a32f.appspot.com',
       messagingSenderId: '866903339748'
     })
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        this.$store.dispatch('autoLoginUser', user)
+      }
+    })
+
+    this.$store.dispatch('fetchAds')
   }
 })

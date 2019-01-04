@@ -11,12 +11,13 @@
                 </v-form>
                 <v-layout row>
                     <v-flex xs12>
-                        <v-btn color="blue-grey" class="white--text warning mb-3">
+                        <v-btn color="blue-grey" class="white--text warning mb-3" @click="triggerUpload">
                             Upload
                             <v-icon right dark>cloud_upload</v-icon>
                         </v-btn>
+                        <input ref="fileInput" type="file" style="display: none;" accept="image/*" @change="onFileChange">
                         <div>
-                            <img src="" alt="" height="100">
+                            <img :src="imgSrc" alt="" height="100" v-if="imgSrc">
                         </div>
                     </v-flex>
                 </v-layout>
@@ -28,7 +29,7 @@
                 <v-layout row>
                     <v-flex xs12>
                         <v-spacer></v-spacer>
-                        <v-btn class="success" :disabled="!valid" @click="createAd">Create Ad</v-btn>
+                        <v-btn class="success" :disabled="!valid || !img || loading" @click="createAd" :loading="loading">Create Ad</v-btn>
                     </v-flex>
                 </v-layout>
             </v-flex>
@@ -43,21 +44,46 @@ export default {
       title: '',
       description: '',
       promo: false,
-      valid: false
+      valid: false,
+      img: null,
+      imgSrc: ''
+    }
+  },
+  computed: {
+    loading () {
+      return this.$store.getters.loading
     }
   },
   methods: {
     createAd () {
-      if (this.$refs.form.validate()) {
+      if (this.$refs.form.validate() && this.img) {
         const ad = {
           title: this.title,
           description: this.description,
           promo: this.promo,
-          imgSrc: 'https://loremflickr.com/1440/500'
+          img: this.img
         }
 
         this.$store.dispatch('createAd', ad)
+          .then(() => {
+            this.$router.push('/list')
+          })
+          .catch(() => {})
       }
+    },
+    triggerUpload () {
+      this.$refs.fileInput.click()
+    },
+    onFileChange (event) {
+      const file = event.target.files[0]
+
+      const reader = new FileReader()
+
+      reader.onload = e => {
+        this.imgSrc = reader.result
+      }
+      reader.readAsDataURL(file)
+      this.img = file
     }
   }
 }
